@@ -19,12 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: 'cookie-session',
-    secret: 'COOKIE_SECRET',
+    secret: process.env.COOKIE_SECRET,
     httpOnly: true,
   })
 );
 app.use(getRoutes(router));
 
-app.listen(3001, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log('Server is running');
 });
