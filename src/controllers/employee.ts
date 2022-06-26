@@ -7,11 +7,13 @@ const getEmployeeOrders = (req: Request, res: Response) => {
   const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
 
   const completionDate = (req.query.completionDate ?? '') as string;
-
+  const status = (req.query.status ?? '') as string;
+  
   const filter = {
     assignedEmployee: req.params.id,
     ...(completionDate === 'true' && { completionDate: { $ne: null } }),
     ...(completionDate === 'false' && { completionDate: null }),
+    ...(status ? { status } : { status: { $ne: 'completed' } })
   };
 
   const sorting = { 

@@ -14,8 +14,10 @@ const normalizeOrder = (order: IOrder): IOrder => {
 
   return {
     ...order,
-    status: (order.completionDate && isAssignedEmployeeValid) ? 'inProgress' : 'inbox',
     assignedEmployee: isAssignedEmployeeValid ? (assignedEmployee || null) : null,
+    status: order.status 
+      ? order.status
+      : (order.completionDate && isAssignedEmployeeValid) ? 'inProgress' : 'inbox',
   };
 };
 
