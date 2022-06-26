@@ -27,13 +27,13 @@ const signIn = (req: Request, res: Response) => {
     }
 
     if (!user) {
-      return res.status(404).send({ message: 'User not found.' });
+      return res.status(404).send({ message: 'User not found, check the entered data again!' });
     }
 
     const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).send({ message: 'Invalid password!' });
+      return res.status(401).send({ message: 'Provided password is not correct!' });
     }
 
     req.session = { token: jwt.sign({ id: user._id }, process.env.JWT_SECRET!) };
