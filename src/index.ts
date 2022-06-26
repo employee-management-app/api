@@ -23,7 +23,7 @@ app.use(
   cookieSession({
     name: 'employee-management-app',
     secret: process.env.COOKIE_SECRET,
-    httpOnly: true,
+    httpOnly: false,
   })
 );
 app.use(getRoutes(router));
