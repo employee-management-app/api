@@ -13,12 +13,15 @@ mongoose.connect(process.env.MONGODB_URL!, (err) => {
 const app = express();
 const router = express.Router();
 
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
-    name: 'cookie-session',
+    name: 'employee-management-app',
     secret: process.env.COOKIE_SECRET,
     httpOnly: true,
   })
