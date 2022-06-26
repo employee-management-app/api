@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { Order } from '../models';
 import { IOrder } from '../models/order';
 import { getCoordinatesFromAddress } from '../helpers/getCoordinatesFromAddress';
+import { getIsAddressChanged } from '../helpers/getIsAddressChanged';
 
 const normalizeOrder = (order: IOrder): IOrder => {
   const { assignedEmployee } = order;
@@ -33,7 +34,9 @@ const createOrder = async (req: Request, res: Response) => {
       return res.status(500).send({ message: err });
     }
 
-    res.send(order);
+    order.populate('assignedEmployee', () => {
+      res.send(order);
+    });
   });
 };
 
@@ -47,25 +50,31 @@ const updateOrder = (req: Request, res: Response) => {
       return res.status(404).send({ message: 'Order not found' });
     }
 
+    const isAddressChanged = getIsAddressChanged(order.address, req.body.address);
+
     merge(order, normalizeOrder({ 
       assignedEmployee: order.assignedEmployee,
       completionDate: order.completionDate,
       ...req.body, 
     }));
 
-    try {
-      const address = await getCoordinatesFromAddress(order.address);
-      merge(order, { address });
-    } catch (err) {
-      return res.status(400).send({ message: err });
+    if (isAddressChanged) {
+      try {
+        const address = await getCoordinatesFromAddress(order.address);
+        merge(order, { address });
+      } catch (err) {
+        return res.status(400).send({ message: err });
+      }
     }
 
     order.save((err, order) => {
       if (err) {
         return res.status(500).send({ message: err });
       }
-  
-      res.send(order);
+
+      order.populate('assignedEmployee', () => {
+        res.send(order);
+      });
     });
   });
 };

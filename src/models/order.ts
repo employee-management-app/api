@@ -9,7 +9,8 @@ export interface IOrder {
     street: string;
     house: string;
     flat: string;
-    coordinates: [number, number];
+    lat: number;
+    lng: number;
   };
   email: string;
   name: string;
@@ -19,7 +20,7 @@ export interface IOrder {
   priority: 0 | 1 | 2 | 3;
   status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';
   completionDate: Date | null;
- assignedEmployee: string | null;
+  assignedEmployee: string | null;
 }
 
 export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>({
@@ -60,10 +61,13 @@ export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>
         default: '',
         maxLength: 10,
       },
-      coordinates: {
-        type: [Number],
+      lat: {
+        type: Number,
         required: true,
-        validate: [(value: number[]) => value.length === 2, 'Coordinates should contain 2 values'],
+      },
+      lng: {
+        type: Number,
+        required: true,
       },
     },
     required: true,

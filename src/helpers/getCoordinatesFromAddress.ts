@@ -16,7 +16,8 @@ export const getCoordinatesFromAddress = (address: IOrder['address']) => new Pro
         ...address,
         street: data.results[0]?.address_components.find(({ types }) => types.includes(PlaceType2.route))?.short_name ?? address.street,
         code: data.results[0]?.address_components.find(({ types }) => types.includes(PlaceType2.postal_code))?.short_name ?? address.code,
-        coordinates: [coordinates.lat, coordinates.lng],
+        lat: coordinates.lat,
+        lng: coordinates.lng,
       });
     })
     .catch((err) => {
