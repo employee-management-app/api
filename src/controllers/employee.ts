@@ -14,7 +14,7 @@ const getEmployeeOrders = (req: Request, res: Response) => {
     ...(completionDate === 'false' && { completionDate: null }),
   };
 
-  Order.find(filter).sort({ [sortBy]: orderBy }).exec((err, orders) => {
+  Order.find(filter).sort({ [sortBy]: orderBy }).populate('assignedEmployee').exec((err, orders) => {
     if (err) {
       return res.status(500).send({ message: err });
     }

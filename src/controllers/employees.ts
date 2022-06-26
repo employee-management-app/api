@@ -3,12 +3,12 @@ import { Request, Response } from 'express';
 import { User } from '../models';
 
 const getEmployees = (req: Request, res: Response) => {
-  User.find({}).exec((err, orders) => {
+  User.find({}).exec((err, employees) => {
     if (err) {
       return res.status(500).send({ message: err });
     }
 
-    res.send(orders);
+    res.send(employees);
   });
 };
 
