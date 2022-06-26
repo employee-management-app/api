@@ -22,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: 'employee-management-app',
+    secureProxy: true,
     secret: process.env.COOKIE_SECRET,
     httpOnly: false,
   })
