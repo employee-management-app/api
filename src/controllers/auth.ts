@@ -36,23 +36,11 @@ const signIn = (req: Request, res: Response) => {
       return res.status(401).send({ message: 'Provided password is not correct!' });
     }
 
-    req.session = { token: jwt.sign({ id: user._id }, process.env.JWT_SECRET!) };
-
-    res.status(200).send(user);
+    res.status(200).send({ user, token: jwt.sign({ id: user._id }, process.env.JWT_SECRET!) });
   });
-};
-
-const signOut = (req: Request, res: Response) => {
-  try {
-    req.session = null;
-    return res.status(200).send({ message: "You've been signed out!" });
-  } catch (err) {
-    return res.status(500).send({ message: err });
-  }
 };
 
 export {
   signUp,
   signIn,
-  signOut,
 };
