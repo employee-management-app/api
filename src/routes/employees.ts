@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { veryfyToken } from '../middlewares/veryfyToken';
+import { verifyToken } from '../middlewares/verifyToken';
 import { getEmployees } from '../controllers/employees';
 
 export default (router: Router) => {
-  router.get('/employees', [veryfyToken], getEmployees);
+  router.get('/employees', [verifyToken], getEmployees);
 };

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { User } from '../models';
 
-export const veryfySignUp = (req: Request, res: Response, next: NextFunction) => {
+export const verifySignUp = (req: Request, res: Response, next: NextFunction) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
     if (err) {
       return res.status(500).send({ message: err });
