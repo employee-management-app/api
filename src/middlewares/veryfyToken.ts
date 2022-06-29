@@ -10,7 +10,7 @@ export const veryfyToken = (req: Request, res: Response, next: NextFunction) => 
 
   jwt.verify(token, process.env.JWT_SECRET!, (err: VerifyErrors | null) => {
     if (err) {
-      res.status(401).send({ message: 'Unathorized!' });
+      return res.status(401).send({ message: 'Unathorized!' });
     }
 
     next();
