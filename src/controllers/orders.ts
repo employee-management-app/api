@@ -20,9 +20,9 @@ const getOrders = (req: Request, res: Response) => {
     ...(status ? { status } : { status: { $ne: 'completed' } })
   };
 
-  Order.find(filter).sort({ [sortBy]: orderBy }).populate('assignedEmployee').exec((err, orders) => {
-    if (err) {
-      return res.status(500).send({ message: err });
+  Order.find(filter).sort({ [sortBy]: orderBy }).populate('assignedEmployee').exec((error, orders) => {
+    if (error) {
+      return res.status(500).send({ message: error });
     }
 
     res.send(orders);

@@ -1,16 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface IUser {
-  name: string;
-  surname: string;
-  phone: string;
-  email: string;
-  password: string;
-  role: 'employee' | 'manager' | 'admin';
-  registrationDate: Date;
-  isVerified: boolean;
-  isActive: boolean;
-}
+import { User as IUser } from '../types/user';
 
 export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
   name: {
@@ -32,7 +22,7 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
     type: String,
     maxLength: 125,
     required: true,
-    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
   },
   password: {
     type: String,

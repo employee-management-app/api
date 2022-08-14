@@ -1,0 +1,22 @@
+export interface Order {
+  creationDate: Date;
+  type: string;
+  address: {
+    city: string;
+    code: string;
+    street: string;
+    house: string;
+    flat: string;
+    lat: number;
+    lng: number;
+  };
+  email: string;
+  name: string;
+  surname: string;
+  phone: string;
+  message: string;
+  priority: 0 | 1 | 2 | 3;
+  status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';
+  completionDate: Date | null;
+  assignedEmployee: string | null;
+}

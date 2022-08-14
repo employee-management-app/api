@@ -1,4 +1,4 @@
-import { IOrder } from "../models/order";
+import { Order as IOrder } from "../types/order";
 
 export const getIsAddressChanged = (a: IOrder['address'], b?: IOrder['address']) => {
   if (!b) {
