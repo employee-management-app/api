@@ -1,12 +1,8 @@
 import mongoose from 'mongoose';
 
-import { User } from './user';
-import { Order } from './order';
-
 mongoose.Promise = global.Promise;
 
-export {
-  mongoose,
-  User,
-  Order,
-};
+// eslint-disable-next-line unicorn/prefer-export-from
+export { mongoose };
+export { User } from './user';
+export { Order } from './order';

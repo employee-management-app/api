@@ -1,12 +1,12 @@
 import { Client, PlaceType2 } from '@googlemaps/google-maps-services-js';
-import { IOrder } from '../models/order';
+import { Order } from '../types/order';
 
 const client = new Client({});
 
-export const getCoordinatesFromAddress = (address: IOrder['address']) => new Promise<IOrder['address']>((resolve, reject) => {
+export const getCoordinatesFromAddress = (address: Order['address']) => new Promise<Order['address']>((resolve, reject) => {
   client.geocode({
     params: {
-      key: process.env.GOOGLE_API_KEY!,
+      key: process.env.GOOGLE_API_KEY,
       address: `${address.code}, ${address.street}, ${address.house}, ${address.city}`,
     },
   })
@@ -20,7 +20,7 @@ export const getCoordinatesFromAddress = (address: IOrder['address']) => new Pro
         lng: coordinates.lng,
       });
     })
-    .catch((err) => {
-      reject(err);
+    .catch((error) => {
+      reject(error);
     });
 });

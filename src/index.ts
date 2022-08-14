@@ -5,8 +5,8 @@ import cors from 'cors';
 import { mongoose } from './models';
 import { getRoutes } from './routes';
 
-mongoose.connect(process.env.MONGODB_URL!, (err) => {
-  console.log(err || 'Successfully connected to MongoDB.');
+mongoose.connect(process.env.MONGODB_URL, (error) => {
+  console.log(error || 'Successfully connected to MongoDB.');
 });
 
 const app = express();

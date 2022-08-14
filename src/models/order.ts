@@ -1,27 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface IOrder {
-  creationDate: Date;
-  type: string;
-  address: {
-    city: string;
-    code: string;
-    street: string;
-    house: string;
-    flat: string;
-    lat: number;
-    lng: number;
-  };
-  email: string;
-  name: string;
-  surname: string;
-  phone: string;
-  message: string;
-  priority: 0 | 1 | 2 | 3;
-  status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';
-  completionDate: Date | null;
-  assignedEmployee: string | null;
-}
+import { Order as IOrder } from '../types/order';
 
 export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>({
   creationDate: {
@@ -76,7 +55,7 @@ export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>
     type: String,
     maxLength: 125,
     required: true,
-    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
   },
   name: {
     type: String,
