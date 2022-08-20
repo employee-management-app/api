@@ -8,15 +8,15 @@ const getOrders = (req: Request, res: Response) => {
   const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
 
   const assignedEmployee = (req.query.assignedEmployee ?? '') as string;
-  const completionDate = (req.query.completionDate ?? '') as string;
+  const startDate = (req.query.startDate ?? '') as string;
   const status = (req.query.status ?? '') as string;
 
   const filter = {
     ...(assignedEmployee === 'true' && { assignedEmployee: { $ne: null } }),
     ...(assignedEmployee === 'false' && { assignedEmployee: null }),
     ...(mongoose.Types.ObjectId.isValid(assignedEmployee) && { assignedEmployee }),
-    ...(completionDate === 'true' && { completionDate: { $ne: null } }),
-    ...(completionDate === 'false' && { completionDate: null }),
+    ...(startDate === 'true' && { startDate: { $ne: null } }),
+    ...(startDate === 'false' && { startDate: null }),
     ...(status ? { status } : { status: { $ne: 'completed' } })
   };
 

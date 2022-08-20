@@ -6,7 +6,7 @@ const client = new Client({});
 export const getCoordinatesFromAddress = (address: Order['address']) => new Promise<Order['address']>((resolve, reject) => {
   client.geocode({
     params: {
-      key: process.env.GOOGLE_API_KEY,
+      key: process.env.GOOGLE_API_KEY as string,
       address: `${address.code}, ${address.street}, ${address.house}, ${address.city}`,
     },
   })

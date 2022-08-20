@@ -8,14 +8,14 @@ import { getCoordinatesFromAddress } from '../helpers/getCoordinatesFromAddress'
 import { getIsAddressChanged } from '../helpers/getIsAddressChanged';
 
 const normalizeOrder = (order: IOrder): IOrder => {
-  const { assignedEmployee, status, completionDate } = order;
+  const { assignedEmployee, status, startDate } = order;
 
   const isAssignedEmployeeValid = mongoose.Types.ObjectId.isValid(assignedEmployee ?? '');
 
   return {
     ...order,
     assignedEmployee: isAssignedEmployeeValid ? (assignedEmployee || null) : null,
-    status: status || ((completionDate && isAssignedEmployeeValid) ? 'inProgress' : 'inbox')
+    status: status || ((startDate && isAssignedEmployeeValid) ? 'inProgress' : 'inbox')
   };
 };
 
@@ -54,7 +54,8 @@ const updateOrder = (req: Request, res: Response) => {
 
     merge(order, normalizeOrder({ 
       assignedEmployee: order.assignedEmployee,
-      completionDate: order.completionDate,
+      startDate: order.startDate,
+      endDate: order.endDate,
       ...req.body, 
     }));
 
