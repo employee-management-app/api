@@ -36,7 +36,7 @@ const signIn = (req: Request, res: Response) => {
       return res.status(401).send({ message: 'Provided password is not correct!' });
     }
 
-    res.status(200).send({ user, token: jwt.sign({ id: user._id }, process.env.JWT_SECRET) });
+    res.status(200).send({ user, token: jwt.sign({ id: user._id }, process.env.JWT_SECRET as jwt.Secret) });
   });
 };
 

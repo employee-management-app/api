@@ -17,6 +17,7 @@ export interface Order {
   message: string;
   priority: 0 | 1 | 2 | 3;
   status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';
-  completionDate: Date | null;
+  startDate: Date | null;
+  endDate: Date | null;
   assignedEmployee: string | null;
 }

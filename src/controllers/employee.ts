@@ -6,13 +6,13 @@ const getEmployeeOrders = (req: Request, res: Response) => {
   const sortBy = (req.query.sortBy ?? 'creationDate') as string;
   const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
 
-  const completionDate = (req.query.completionDate ?? '') as string;
+  const startDate = (req.query.startDate ?? '') as string;
   const status = (req.query.status ?? '') as string;
   
   const filter = {
     assignedEmployee: req.params.id,
-    ...(completionDate === 'true' && { completionDate: { $ne: null } }),
-    ...(completionDate === 'false' && { completionDate: null }),
+    ...(startDate === 'true' && { startDate: { $ne: null } }),
+    ...(startDate === 'false' && { startDate: null }),
     ...(status ? { status } : { status: { $ne: 'completed' } })
   };
 

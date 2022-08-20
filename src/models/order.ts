@@ -90,11 +90,15 @@ export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>
     default: 'inbox',
     required: true,
   },
-  completionDate: {
+  startDate: {
     type: Date,
     default: null,
   },
- assignedEmployee: {
+  endDate: {
+    type: Date,
+    default: null,
+  },
+  assignedEmployee: {
     type: mongoose.Schema.Types.ObjectId,
     default: null,
     ref: 'User',

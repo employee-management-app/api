@@ -5,7 +5,7 @@ import cors from 'cors';
 import { mongoose } from './models';
 import { getRoutes } from './routes';
 
-mongoose.connect(process.env.MONGODB_URL, (error) => {
+mongoose.connect(process.env.MONGODB_URL as string, (error) => {
   console.log(error || 'Successfully connected to MongoDB.');
 });
 
