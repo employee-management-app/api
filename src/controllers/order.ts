@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { merge } from 'lodash';
 import { Request, Response } from 'express';
+import { v2 as cloudinary } from 'cloudinary';
+import { unlink } from 'node:fs/promises';
 
 import { Order } from '../models';
 import { Order as IOrder } from '../types/order';
@@ -17,6 +19,20 @@ const normalizeOrder = (order: IOrder): IOrder => {
     assignedEmployee: isAssignedEmployeeValid ? (assignedEmployee || null) : null,
     status: status || ((startDate && isAssignedEmployeeValid) ? 'inProgress' : 'inbox')
   };
+};
+
+const getOrder = (req: Request, res: Response) => {
+  Order.findById(req.params.id).populate('assignedEmployee').exec((error, order) => {
+    if (error) {
+      return res.status(500).send({ message: error });
+    }
+
+    if (!order) {
+      return res.status(404).send({ message: 'Order not found' });
+    }
+
+    res.send(order);
+  });
 };
 
 const createOrder = async (req: Request, res: Response) => {
@@ -91,8 +107,85 @@ const deleteOrder = (req: Request, res: Response) => {
   });
 };
 
+const uploadFile = (req: Request, res: Response) => {
+  Order.findById(req.params.id).exec(async (error, order) => {
+    if (error) {
+      return res.status(500).send({ message: error });
+    }
+
+    if (!order) {
+      return res.status(404).send({ message: 'Order not found' });
+    }
+
+    const path = req.file?.path;
+
+    if (!path) {
+      return res.status(400).send({ message: 'File was not provided!' });
+    }
+
+    cloudinary.uploader.upload(path, { use_filename: true })
+      .then((data) => {
+        const file = {
+          id: data.public_id,
+          format: data.format,
+          width: data.width,
+          height: data.height,
+          url: data.secure_url,
+          creationDate: data.created_at as unknown as Date,
+        };
+
+        order.files.push(file);
+
+        order.save((error) => {
+          if (error) {
+            return res.status(500).send({ message: error });
+          }
+    
+          res.send(file);
+        });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
+      })
+      .finally(() => {
+        unlink(path);
+      });
+  });
+};
+
+const removeFile = (req: Request, res: Response) => {
+  Order.findById(req.params.id).exec(async (error, order) => {
+    if (error) {
+      return res.status(500).send({ message: error });
+    }
+
+    if (!order) {
+      return res.status(404).send({ message: 'Order not found' });
+    }
+
+    cloudinary.uploader.destroy(req.params.fileId, {}, (error) => {
+      if (error) {
+        return res.status(500).send({ message: error });
+      }
+
+      order.files = order.files.filter((file) => file.id !== req.params.fileId);
+
+      order.save((error) => {
+        if (error) {
+          return res.status(500).send({ message: error });
+        }
+  
+        res.send({ message: 'File was removed.' });
+      });
+    });
+  });
+};
+
 export {
+  getOrder,
   createOrder,
   updateOrder,
   deleteOrder,
+  uploadFile,
+  removeFile,
 };
