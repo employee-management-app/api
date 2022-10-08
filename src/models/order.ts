@@ -77,6 +77,16 @@ export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>
     default: '',
     maxLength: 1000,
   },
+  employeeMessage: {
+    type: String,
+    default: '',
+    maxLength: 1000,
+  },
+  managerMessage: {
+    type: String,
+    default: '',
+    maxLength: 1000,
+  },
   priority: {
     type: Number,
     min: 0,
@@ -102,5 +112,32 @@ export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>
     type: mongoose.Schema.Types.ObjectId,
     default: null,
     ref: 'User',
+  },
+  files: {
+    type: [{
+      id: {
+        type: String,
+        required: true,
+      },
+      format: {
+        type: String,
+        required: true,
+      },
+      width: {
+        type: Number,
+        required: true,
+      },
+      height: {
+        type: Number,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
+      creationDate: {
+        type: Date,
+      },
+    }],
   },
 }));
