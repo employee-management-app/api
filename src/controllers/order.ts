@@ -68,11 +68,11 @@ const updateOrder = (req: Request, res: Response) => {
 
     const isAddressChanged = getIsAddressChanged(order.address, req.body.address);
 
-    merge(order, normalizeOrder({ 
+    merge(order, normalizeOrder({
       assignedEmployee: order.assignedEmployee,
       startDate: order.startDate,
       endDate: order.endDate,
-      ...req.body, 
+      ...req.body,
     }));
 
     if (isAddressChanged) {
@@ -123,7 +123,7 @@ const uploadFile = (req: Request, res: Response) => {
       return res.status(400).send({ message: 'File was not provided!' });
     }
 
-    cloudinary.uploader.upload(path, { use_filename: true })
+    cloudinary.uploader.upload(path, { use_filename: true, quality: 'auto:eco' })
       .then((data) => {
         const file = {
           id: data.public_id,
@@ -140,7 +140,7 @@ const uploadFile = (req: Request, res: Response) => {
           if (error) {
             return res.status(500).send({ message: error });
           }
-    
+
           res.send(file);
         });
       })
@@ -174,7 +174,7 @@ const removeFile = (req: Request, res: Response) => {
         if (error) {
           return res.status(500).send({ message: error });
         }
-  
+
         res.send({ message: 'File was removed.' });
       });
     });
