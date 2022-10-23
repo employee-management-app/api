@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 
 import { Order } from '../models';
+import { stringToDate } from '../helpers/stringToDate';
+
+const DAY = 60 * 60 * 24 * 1000;
 
 const getOrders = (req: Request, res: Response) => {
   const sortBy = (req.query.sortBy ?? 'creationDate') as string;
@@ -11,12 +14,21 @@ const getOrders = (req: Request, res: Response) => {
   const startDate = (req.query.startDate ?? '') as string;
   const status = (req.query.status ?? '') as string;
 
+  const dateStart = stringToDate(req.query.dateStart as string | undefined) || '';
+  const dateEnd = stringToDate(req.query.dateEnd as string | undefined) || '';
+
   const filter = {
     ...(assignedEmployee === 'true' && { assignedEmployee: { $ne: null } }),
     ...(assignedEmployee === 'false' && { assignedEmployee: null }),
     ...(mongoose.Types.ObjectId.isValid(assignedEmployee) && { assignedEmployee }),
-    ...(startDate === 'true' && { startDate: { $ne: null } }),
-    ...(startDate === 'false' && { startDate: null }),
+    ...(startDate === 'true' && !dateStart && { startDate: { $ne: null } }),
+    ...(startDate === 'false' && !dateStart && { startDate: null }),
+    ...(dateStart && {
+      startDate: {
+        $gte: dateStart,
+        $lt: new Date((dateEnd || dateStart).getTime() + DAY),
+      },
+    }),
     ...(status ? { status } : { status: { $ne: 'completed' } })
   };
 
