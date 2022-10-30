@@ -4,5 +4,5 @@ mongoose.Promise = global.Promise;
 
 // eslint-disable-next-line unicorn/prefer-export-from
 export { mongoose };
-export { User } from './user';
 export { Order } from './order';
+export { User } from './user';

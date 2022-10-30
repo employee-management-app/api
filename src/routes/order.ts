@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 
-import { getOrder, createOrder, updateOrder, deleteOrder, uploadFile, removeFile } from '../controllers/order';
+import { createOrder, deleteOrder, getOrder, removeFile, updateOrder, uploadFile } from '../controllers/order';
 import { verifyToken } from '../middlewares/verifyToken';
 
 const upload = multer({ dest: './' });

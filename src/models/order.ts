@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { Order as IOrder } from '../types/order';
+import type { Order as IOrder } from '../types/order';
 
 export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>({
   creationDate: {

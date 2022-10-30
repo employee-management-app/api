@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { Order } from '../models';
 import { stringToDate } from '../helpers/stringToDate';
+import { Order } from '../models';
 
 const DAY = 60 * 60 * 24 * 1000;
 
@@ -35,7 +35,7 @@ const getEmployeeOrders = (req: Request, res: Response) => {
 
   Order.find(filter).sort(sorting).populate('assignedEmployee').exec((error, orders) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     res.send(orders);

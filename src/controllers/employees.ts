@@ -5,7 +5,7 @@ import { User } from '../models';
 const getEmployees = (req: Request, res: Response) => {
   User.find({ role: 'employee' }).exec((error, employees) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     res.send(employees);

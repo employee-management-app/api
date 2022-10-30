@@ -1,11 +1,11 @@
-export const stringToDate = (stringDate: string | undefined, suffix = '-') => {
+export const stringToDate = (stringDate: string | undefined, prefix = '-') => {
   if (!stringDate) {
     return null;
   }
 
   const [year, month, day] =
     stringDate
-      .split(suffix)
+      .split(prefix)
       .reverse()
       .map((str, index) => index === 1 ? Number(str) - 1 : Number(str));
 

@@ -1,9 +1,9 @@
+import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
 
 import { User } from '../models';
-import { User as IUser } from '../types/user';
+import type { User as IUser } from '../types/user';
 
 const signUp = (req: Request, res: Response) => {
   const user = new User({
@@ -13,17 +13,17 @@ const signUp = (req: Request, res: Response) => {
 
   user.save((error, user) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     res.send(user);
-  })
+  });
 };
 
 const signIn = (req: Request, res: Response) => {
   User.findOne({ email: req.body.email }).exec((error, user) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     if (!user) {
@@ -41,6 +41,6 @@ const signIn = (req: Request, res: Response) => {
 };
 
 export {
-  signUp,
   signIn,
+  signUp,
 };

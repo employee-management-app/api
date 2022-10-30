@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
+import { signIn, signUp } from '../controllers/auth';
 import { verifySignUp } from '../middlewares/verifySignUp';
-import { signUp, signIn } from '../controllers/auth';
 
 export default (router: Router) => {
   router.post('/auth/signup', [verifySignUp], signUp);

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { User as IUser } from '../types/user';
+import type { User as IUser } from '../types/user';
 
 export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
   name: {

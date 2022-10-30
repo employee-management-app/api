@@ -1,5 +1,6 @@
 import { Client, PlaceType2 } from '@googlemaps/google-maps-services-js';
-import { Order } from '../types/order';
+
+import type { Order } from '../types/order';
 
 const client = new Client({});
 

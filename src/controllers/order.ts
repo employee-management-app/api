@@ -1,13 +1,14 @@
-import mongoose from 'mongoose';
-import { merge } from 'lodash';
-import { Request, Response } from 'express';
-import { v2 as cloudinary } from 'cloudinary';
 import { unlink } from 'node:fs/promises';
 
-import { Order } from '../models';
-import { Order as IOrder } from '../types/order';
+import { v2 as cloudinary } from 'cloudinary';
+import { Request, Response } from 'express';
+import { merge } from 'lodash';
+import mongoose from 'mongoose';
+
 import { getCoordinatesFromAddress } from '../helpers/getCoordinatesFromAddress';
 import { getIsAddressChanged } from '../helpers/getIsAddressChanged';
+import { Order } from '../models';
+import type { Order as IOrder } from '../types/order';
 
 const normalizeOrder = (order: IOrder): IOrder => {
   const { assignedEmployee, status, startDate } = order;
@@ -24,7 +25,7 @@ const normalizeOrder = (order: IOrder): IOrder => {
 const getOrder = (req: Request, res: Response) => {
   Order.findById(req.params.id).populate('assignedEmployee').exec((error, order) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     if (!order) {
@@ -42,12 +43,12 @@ const createOrder = async (req: Request, res: Response) => {
     const address = await getCoordinatesFromAddress(order.address);
     merge(order, { address });
   } catch (error) {
-    return res.status(400).send({ message: error });
+    return res.status(400).send(error);
   }
 
   order.save((error, order) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     order.populate('assignedEmployee', () => {
@@ -59,7 +60,7 @@ const createOrder = async (req: Request, res: Response) => {
 const updateOrder = (req: Request, res: Response) => {
   Order.findById(req.params.id).exec(async (error, order) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     if (!order) {
@@ -80,13 +81,13 @@ const updateOrder = (req: Request, res: Response) => {
         const address = await getCoordinatesFromAddress(order.address);
         merge(order, { address });
       } catch (error) {
-        return res.status(400).send({ message: error });
+        return res.status(400).send(error);
       }
     }
 
     order.save((error, order) => {
       if (error) {
-        return res.status(500).send({ message: error });
+        return res.status(500).send(error);
       }
 
       order.populate('assignedEmployee', () => {
@@ -100,7 +101,7 @@ const updateOrder = (req: Request, res: Response) => {
 const deleteOrder = (req: Request, res: Response) => {
   Order.findByIdAndDelete(req.params.id).exec((error) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     res.send({ message: 'The order was successfully deleted!' });
@@ -110,7 +111,7 @@ const deleteOrder = (req: Request, res: Response) => {
 const uploadFile = (req: Request, res: Response) => {
   Order.findById(req.params.id).exec(async (error, order) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     if (!order) {
@@ -138,7 +139,7 @@ const uploadFile = (req: Request, res: Response) => {
 
         order.save((error) => {
           if (error) {
-            return res.status(500).send({ message: error });
+            return res.status(500).send(error);
           }
 
           res.send(file);
@@ -156,7 +157,7 @@ const uploadFile = (req: Request, res: Response) => {
 const removeFile = (req: Request, res: Response) => {
   Order.findById(req.params.id).exec(async (error, order) => {
     if (error) {
-      return res.status(500).send({ message: error });
+      return res.status(500).send(error);
     }
 
     if (!order) {
@@ -165,14 +166,14 @@ const removeFile = (req: Request, res: Response) => {
 
     cloudinary.uploader.destroy(req.params.fileId, {}, (error) => {
       if (error) {
-        return res.status(500).send({ message: error });
+        return res.status(500).send(error);
       }
 
       order.files = order.files.filter((file) => file.id !== req.params.fileId);
 
       order.save((error) => {
         if (error) {
-          return res.status(500).send({ message: error });
+          return res.status(500).send(error);
         }
 
         res.send({ message: 'File was removed.' });
@@ -182,10 +183,10 @@ const removeFile = (req: Request, res: Response) => {
 };
 
 export {
-  getOrder,
   createOrder,
-  updateOrder,
   deleteOrder,
-  uploadFile,
+  getOrder,
   removeFile,
+  updateOrder,
+  uploadFile,
 };
