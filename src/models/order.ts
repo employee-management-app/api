@@ -1,8 +1,9 @@
+import { areIntervalsOverlapping, endOfDay, startOfDay } from 'date-fns';
 import mongoose from 'mongoose';
 
 import type { Order as IOrder } from '../types/order';
 
-export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>({
+const OrderSchema = new mongoose.Schema<IOrder>({
   creationDate: {
     type: Date,
     default: Date.now,
@@ -140,4 +141,51 @@ export const Order = mongoose.model<IOrder>('Order', new mongoose.Schema<IOrder>
       },
     }],
   },
-}));
+});
+
+OrderSchema.post('validate', async (order, next) => {
+  if (!order.assignedEmployee || !order.startDate) {
+    return next();
+  }
+
+  const query = {
+    _id: { $ne: order._id },
+    assignedEmployee: order.assignedEmployee,
+    startDate: {
+      $gte: startOfDay(order.startDate),
+      $lte: endOfDay(order.startDate),
+    },
+  };
+
+  const orders = await Order.find(query);
+
+  const overlappedOrder = orders.find(({ startDate, endDate }) => {
+    if (!startDate || !endDate || !order.startDate || !order.endDate) {
+      return false;
+    }
+
+    return areIntervalsOverlapping(
+      { start: startDate, end: endDate, },
+      { start: order.startDate, end: order.endDate, },
+    );
+  });
+
+  if (overlappedOrder) {
+    return next(new mongoose.Error.ValidatorError({
+      message: 'Order\'s time overlaps with another order',
+      value: overlappedOrder._id,
+    }));
+  }
+
+  next();
+});
+
+OrderSchema.post('validate', (order) => {
+  const canEdit = order.status === 'inbox' || order.status === 'inProgress';
+
+  if (canEdit) {
+    order.set('status', (order.startDate && order.assignedEmployee) ? 'inProgress' : 'inbox');
+  }
+});
+
+export const Order = mongoose.model<IOrder>('Order', OrderSchema);

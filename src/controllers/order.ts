@@ -3,24 +3,10 @@ import { unlink } from 'node:fs/promises';
 import { v2 as cloudinary } from 'cloudinary';
 import { Request, Response } from 'express';
 import { merge } from 'lodash';
-import mongoose from 'mongoose';
 
 import { getCoordinatesFromAddress } from '../helpers/getCoordinatesFromAddress';
 import { getIsAddressChanged } from '../helpers/getIsAddressChanged';
 import { Order } from '../models';
-import type { Order as IOrder } from '../types/order';
-
-const normalizeOrder = (order: IOrder): IOrder => {
-  const { assignedEmployee, status, startDate } = order;
-
-  const isAssignedEmployeeValid = mongoose.Types.ObjectId.isValid(assignedEmployee ?? '');
-
-  return {
-    ...order,
-    assignedEmployee: isAssignedEmployeeValid ? (assignedEmployee || null) : null,
-    status: status || ((startDate && isAssignedEmployeeValid) ? 'inProgress' : 'inbox')
-  };
-};
 
 const getOrder = (req: Request, res: Response) => {
   Order.findById(req.params.id).populate('assignedEmployee').exec((error, order) => {
@@ -37,7 +23,7 @@ const getOrder = (req: Request, res: Response) => {
 };
 
 const createOrder = async (req: Request, res: Response) => {
-  const order = new Order(normalizeOrder(req.body));
+  const order = new Order(req.body);
 
   try {
     const address = await getCoordinatesFromAddress(order.address);
@@ -69,12 +55,7 @@ const updateOrder = (req: Request, res: Response) => {
 
     const isAddressChanged = getIsAddressChanged(order.address, req.body.address);
 
-    merge(order, normalizeOrder({
-      assignedEmployee: order.assignedEmployee,
-      startDate: order.startDate,
-      endDate: order.endDate,
-      ...req.body,
-    }));
+    merge(order, req.body);
 
     if (isAddressChanged) {
       try {
@@ -87,7 +68,7 @@ const updateOrder = (req: Request, res: Response) => {
 
     order.save((error, order) => {
       if (error) {
-        return res.status(500).send(error);
+        return res.status(400).send(error);
       }
 
       order.populate('assignedEmployee', () => {

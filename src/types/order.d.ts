@@ -1,4 +1,7 @@
+import mongoose from 'mongoose';
+
 export interface Order {
+  _id: string;
   creationDate: Date;
   type: string;
   address: {
@@ -21,7 +24,7 @@ export interface Order {
   status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';
   startDate: Date | null;
   endDate: Date | null;
-  assignedEmployee: string | null;
+  assignedEmployee: mongoose.Types.ObjectId | null;
   files: {
     id: string,
     format: string,
