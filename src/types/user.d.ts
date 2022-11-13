@@ -8,4 +8,5 @@ export interface User {
   registrationDate: Date;
   isVerified: boolean;
   isActive: boolean;
+  color: string;
 }

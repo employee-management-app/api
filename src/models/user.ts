@@ -22,15 +22,16 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
     type: String,
     maxLength: 125,
     required: true,
+    unique: true,
     match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
   },
   password: {
     type: String,
-    required: true,
   },
   role: {
     type: String,
     enum: ['employee', 'manager', 'admin'],
+    default: 'employee',
     required: true,
   },
   registrationDate: {
@@ -46,6 +47,11 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
   isActive: {
     type: Boolean,
     default: true,
+    required: true,
+  },
+  color: {
+    type: String,
+    default: '#FF0000',
     required: true,
   },
 }));
