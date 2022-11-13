@@ -87,6 +87,10 @@ export const inviteEmployee = (req: Request, res: Response) => {
       res.send(data);
     })
     .catch((error) => {
+      if (error.code === 11000) {
+        return res.status(400).send({ message: 'The user already exists' });
+      }
+
       return res.status(500).send(error);
     });
 };
