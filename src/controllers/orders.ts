@@ -1,3 +1,4 @@
+import { endOfDay, startOfDay } from 'date-fns';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
@@ -6,7 +7,7 @@ import { Order } from '../models';
 
 const DAY = 60 * 60 * 24 * 1000;
 
-const getOrders = (req: Request, res: Response) => {
+export const getOrders = (req: Request, res: Response) => {
   const sortBy = (req.query.sortBy ?? 'creationDate') as string;
   const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
 
@@ -41,6 +42,31 @@ const getOrders = (req: Request, res: Response) => {
   });
 };
 
-export {
-  getOrders,
+export const getSlots = (req: Request, res: Response) => {
+  const startDate = stringToDate(req.query.startDate as string | undefined) || new Date();
+  const endDate = stringToDate(req.query.endDate as string | undefined) || '';
+
+  const query = {
+    ...(req.query.startDate && {
+      startDate: {
+        $gte: startOfDay(startDate),
+        $lte: endOfDay(endDate || startDate),
+      },
+    }),
+  };
+
+  Order.find(query).populate('assignedEmployee').exec((error, orders) => {
+    if (error) {
+      return res.status(500).send(error);
+    }
+
+    res.send(orders.map(({ _id, startDate, endDate, address, priority, assignedEmployee }) => ({
+      _id,
+      assignedEmployee,
+      startDate,
+      endDate,
+      address,
+      priority,
+    })));
+  });
 };
