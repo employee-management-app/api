@@ -4,8 +4,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import { Request, Response } from 'express';
 import { merge } from 'lodash';
 
-import { getCoordinatesFromAddress } from '../helpers/getCoordinatesFromAddress';
-import { getIsAddressChanged } from '../helpers/getIsAddressChanged';
 import { Order } from '../models';
 
 const getOrder = (req: Request, res: Response) => {
@@ -24,13 +22,6 @@ const getOrder = (req: Request, res: Response) => {
 
 const createOrder = async (req: Request, res: Response) => {
   const order = new Order(req.body);
-
-  try {
-    const address = await getCoordinatesFromAddress(order.address);
-    merge(order, { address });
-  } catch (error) {
-    return res.status(400).send(error);
-  }
 
   order.save((error, order) => {
     if (error) {
@@ -53,18 +44,7 @@ const updateOrder = (req: Request, res: Response) => {
       return res.status(404).send({ message: 'Order not found' });
     }
 
-    const isAddressChanged = getIsAddressChanged(order.address, req.body.address);
-
     merge(order, req.body);
-
-    if (isAddressChanged) {
-      try {
-        const address = await getCoordinatesFromAddress(order.address);
-        merge(order, { address });
-      } catch (error) {
-        return res.status(400).send(error);
-      }
-    }
 
     order.save((error, order) => {
       if (error) {

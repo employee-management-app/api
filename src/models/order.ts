@@ -14,8 +14,18 @@ const OrderSchema = new mongoose.Schema<IOrder>({
     maxLength: 125,
     required: true,
   },
+  stage: {
+    type: String,
+    maxLength: 125,
+    required: true,
+  },
   address: {
     type: {
+      fullAddress: {
+        type: String,
+        maxLength: 300,
+        required: true,
+      },
       city: {
         type: String,
         maxLength: 125,
@@ -55,18 +65,15 @@ const OrderSchema = new mongoose.Schema<IOrder>({
   email: {
     type: String,
     maxLength: 125,
-    required: true,
     match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
   },
   name: {
     type: String,
     maxLength: 75,
-    required: true,
   },
   surname: {
     type: String,
     maxLength: 75,
-    required: true,
   },
   phone: {
     type: String,
