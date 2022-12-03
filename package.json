@@ -10,6 +10,9 @@
     "tsc": "tsc",
     "lint": "eslint ./src"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,7 +23,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/lodash": "^4.14.182",
     "@types/multer": "^1.4.7",
-    "@types/node": "^18.7.3",
+    "@types/node": "^18.11.10",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "eslint": "^8.22.0",

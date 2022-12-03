@@ -1,7 +1,7 @@
-import { unlink } from 'node:fs/promises';
-
 import { v2 as cloudinary } from 'cloudinary';
 import { Request, Response } from 'express';
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import { unlink } from 'fs/promises';
 import { merge } from 'lodash';
 
 import { Order } from '../models';
