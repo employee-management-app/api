@@ -59,9 +59,10 @@ export const getEmployeeSlots = (req: Request, res: Response) => {
       return res.status(500).send(error);
     }
 
-    res.send(orders.map(({ _id, startDate, endDate, address, priority }) => ({
+    res.send(orders.map(({ _id, startDate, endDate, address, priority, status }) => ({
       _id,
       startDate,
+      status,
       endDate,
       address,
       priority,
