@@ -2,15 +2,13 @@ import { endOfDay, startOfDay } from 'date-fns';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
+import { sortNotCompletedOrders } from '../helpers/sortNotCompletedOrders';
 import { stringToDate } from '../helpers/stringToDate';
 import { Order } from '../models';
 
 const DAY = 60 * 60 * 24 * 1000;
 
 export const getOrders = (req: Request, res: Response) => {
-  const sortBy = (req.query.sortBy ?? 'creationDate') as string;
-  const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
-
   const assignedEmployee = (req.query.assignedEmployee ?? '') as string;
   const startDate = (req.query.startDate ?? '') as string;
   const status = (req.query.status ?? '') as string;
@@ -33,12 +31,16 @@ export const getOrders = (req: Request, res: Response) => {
     ...(status ? { status } : { status: { $ne: 'completed' } })
   };
 
-  Order.find(filter).sort({ [sortBy]: orderBy }).populate('assignedEmployee').exec((error, orders) => {
+  Order.find(filter).populate('assignedEmployee').exec((error, orders) => {
     if (error) {
       return res.status(500).send(error);
     }
 
-    res.send(orders);
+    if (status) {
+      return res.send(orders);
+    }
+
+    res.send([...orders].sort(sortNotCompletedOrders));
   });
 };
 
