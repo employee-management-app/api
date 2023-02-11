@@ -10,6 +10,10 @@ export const sortNotCompletedOrders = (a: IOrder, b: IOrder) => {
       return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
     }
 
+    if (a.startDate && !a.assignedEmployee && b.assignedEmployee && !b.startDate) {
+      return -1;
+    }
+
     if (a.startDate && b.startDate) {
       return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
     }
