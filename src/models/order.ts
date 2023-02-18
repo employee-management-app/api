@@ -116,6 +116,10 @@ const OrderSchema = new mongoose.Schema<IOrder>({
     type: Date,
     default: null,
   },
+  completedDate: {
+    type: Date,
+    default: null,
+  },
   assignedEmployee: {
     type: mongoose.Schema.Types.ObjectId,
     default: null,
@@ -187,12 +191,14 @@ OrderSchema.post('validate', async (order, next) => {
   next();
 });
 
-OrderSchema.post('validate', (order) => {
+OrderSchema.post('validate', (order, next) => {
   const canEdit = order.status === 'inbox' || order.status === 'inProgress';
 
   if (canEdit) {
     order.set('status', (order.startDate && order.assignedEmployee) ? 'inProgress' : 'inbox');
   }
+
+  next();
 });
 
 export const Order = mongoose.model<IOrder>('Order', OrderSchema);

@@ -44,6 +44,10 @@ const updateOrder = (req: Request, res: Response) => {
       return res.status(404).send({ message: 'Order not found' });
     }
 
+    if (order.status !== 'completed' && req.body.status === 'completed') {
+      order.completedDate = new Date();
+    }
+
     merge(order, req.body);
 
     order.save((error, order) => {

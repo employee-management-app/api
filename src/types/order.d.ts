@@ -36,6 +36,7 @@ export interface Order {
   priority: 0 | 1 | 2 | 3;
   status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';
   startDate: Date | null;
+  completedDate: Date | null;
   endDate: Date | null;
   assignedEmployee: mongoose.Types.ObjectId | null;
   files: File[];
