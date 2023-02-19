@@ -5,28 +5,49 @@ import jwt from 'jsonwebtoken';
 import { sendEmail } from '../helpers/sendEmail';
 import { stringToDate } from '../helpers/stringToDate';
 import { Order, User } from '../models';
+import type { Order as OrderType } from '../types/order';
 
-export const getEmployeeOrders = (req: Request, res: Response) => {
+const DAY = 60 * 60 * 24 * 1000;
+
+interface Query {
+  status?: OrderType['status'];
+  startDate?: string;
+  endDate?: string;
+  stage?: OrderType['stage'] | OrderType['stage'][];
+  priority?: OrderType['priority'] | OrderType['priority'][];
+  type?: OrderType['type'] | OrderType['type'][];
+  orderBy?: string;
+  sortBy?: 'acs' | 'desc';
+  scheduledOnly?: 'true';
+  limit?: string;
+  offset?: string;
+}
+
+export const getEmployeeOrders = (req: Request<any, any, any, Query>, res: Response) => {
   const sortBy = (req.query.sortBy ?? 'creationDate') as string;
   const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
 
-  const startDate = (req.query.startDate ?? '') as string;
-  const status = (req.query.status ?? '') as string;
-
-  const dateStart = stringToDate(req.query.dateStart as string | undefined) || '';
-  const dateEnd = stringToDate(req.query.dateEnd as string | undefined) || '';
+  const { status, scheduledOnly } = req.query;
+  const startDate = stringToDate(req.query.startDate);
+  const endDate = stringToDate(req.query.endDate);
+  const stage = req.query.stage ? [req.query.stage].flat() : null;
+  const priority = req.query.priority ? [req.query.priority].flat() : null;
+  const type = req.query.type ? [req.query.type].flat() : null;
+  const returnScheduledOnly = !!scheduledOnly;
 
   const query = {
     assignedEmployee: req.params.id,
-    ...(startDate === 'true' && { startDate: { $ne: null } }),
-    ...(startDate === 'false' && { startDate: null }),
     ...(status ? { status } : { status: { $ne: 'completed' } }),
-    ...(dateStart && {
+    ...(returnScheduledOnly && { startDate: { $ne: null } }),
+    ...(startDate && {
       startDate: {
-        $gte: startOfDay(dateStart),
-        $lt: endOfDay(dateEnd || dateStart),
+        $gte: startDate,
+        $lt: new Date((endDate ?? startDate).getTime() + DAY),
       },
     }),
+    ...(stage && { stage: { $in: stage } }),
+    ...(priority && { priority: { $in: priority } }),
+    ...(type && { type: { $in: type } }),
   };
 
   const sorting = {
@@ -34,12 +55,17 @@ export const getEmployeeOrders = (req: Request, res: Response) => {
     ...(sortBy !== 'creationDate' && { creationDate: -1 }),
   } as Record<string, 1 | -1>;
 
-  Order.find(query).sort(sorting).populate('assignedEmployee').exec((error, orders) => {
+  const limit = Number(req.query.limit ?? Number.POSITIVE_INFINITY);
+  const offset = Number(req.query.offset ?? 0);
+
+  Order.find(query).sort(sorting).limit(limit).skip(offset).populate('assignedEmployee').exec((error, orders) => {
     if (error) {
       return res.status(500).send(error);
     }
 
-    res.send(orders);
+    Order.count(query, (_, total) => {
+      res.send({ orders, total });
+    });
   });
 };
 
