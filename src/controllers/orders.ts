@@ -18,6 +18,8 @@ interface Query {
   type?: OrderType['type'] | OrderType['type'][];
   unscheduled?: 'true' | 'false';
   unassigned?: 'true' | 'false';
+  limit?: string;
+  offset?: string;
 }
 
 export const getOrders = (req: Request<any, any, any, Query>, res: Response) => {
@@ -48,7 +50,7 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
     return query;
   };
 
-  const filter = {
+  const query = {
     ...(status ? { status } : { status: { $ne: 'completed' } }),
     ...orWrapper({
       ...(startDate && {
@@ -68,16 +70,24 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
     ? { completedDate: -1, _id: -1 } as const
     : undefined;
 
-  Order.find(filter).populate('assignedEmployee').sort(sort).exec((error, orders) => {
+  const limit = Number(req.query.limit ?? Number.POSITIVE_INFINITY);
+  const offset = Number(req.query.offset ?? 0);
+
+  Order.find(query).sort(sort).limit(limit).skip(offset).populate('assignedEmployee').exec((error, orders) => {
     if (error) {
       return res.status(500).send(error);
     }
 
-    if (status) {
-      return res.send(orders);
-    }
+    Order.count(query, (_, total) => {
+      if (status) {
+        return res.send({ orders, total });
+      }
 
-    res.send([...orders].sort(sortNotCompletedOrders));
+      res.send({
+        orders: [...orders].sort(sortNotCompletedOrders),
+        total,
+      });
+    });
   });
 };
 
