@@ -33,16 +33,15 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
   const returnUnscheduled = unscheduled ? unscheduled === 'true' : false;
   const returnUnassigned =  unassigned ? unassigned === 'true' : false;
 
-  const orWrapper = (query: Record<string, object>) => {
-    if (returnUnscheduled && returnUnassigned) {
-      return { $or: [query, { assignedEmployee: null }, { startDate: null }] };
-    }
-
+  const normalizeStartDate = (query: Record<string, object>) => {
     if (returnUnscheduled) {
       return { $or: [query, { startDate: null }] };
-
     }
 
+    return query;
+  };
+
+  const normalizeEmployee = (query: Record<string, object>) => {
     if (returnUnassigned) {
       return { $or: [query, { assignedEmployee: null }] };
     }
@@ -51,20 +50,22 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
   };
 
   const query = {
-    ...(status ? { status } : { status: { $ne: 'completed' } }),
-    ...orWrapper({
-      ...(startDate && {
+    $and: [
+      ...(status ? [{ status }] : [{ status: { $ne: 'completed' } }]),
+      ...(startDate ? [normalizeStartDate({
         startDate: {
           $gte: startDate,
           $lt: new Date((endDate ?? startDate).getTime() + DAY),
         },
-      }),
-      ...(employee && { assignedEmployee: { $in: employee } }),
-      ...(stage && { stage: { $in: stage } }),
-      ...(priority && { priority: { $in: priority } }),
-      ...(type && { type: { $in: type } }),
-    }),
+      })] : []),
+      ...(employee ? [normalizeEmployee({ assignedEmployee: { $in: employee } })] : []),
+      ...(stage ? [{ stage: { $in: stage } }] : []),
+      ...(priority ? [{ priority: { $in: priority } }] : []),
+      ...(type ? [{ type: { $in: type } }] :[]),
+    ],
   };
+
+  console.log(query.$and);
 
   const sort = status === 'completed'
     ? { completedDate: -1, _id: -1 } as const
