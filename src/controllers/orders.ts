@@ -65,8 +65,6 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
     ],
   };
 
-  console.log(query.$and);
-
   const sort = status === 'completed'
     ? { completedDate: -1, _id: -1 } as const
     : undefined;
