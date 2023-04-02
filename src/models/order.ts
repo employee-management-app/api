@@ -39,7 +39,6 @@ const OrderSchema = new mongoose.Schema<IOrder>({
       street: {
         type: String,
         maxLength: 125,
-        required: true,
       },
       house: {
         type: String,
