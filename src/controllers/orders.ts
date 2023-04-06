@@ -30,38 +30,26 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
   const stage = req.query.stage ? [req.query.stage].flat() : null;
   const priority = req.query.priority ? [req.query.priority].flat() : null;
   const type = req.query.type ? [req.query.type].flat() : null;
-  const returnUnscheduled = unscheduled ? unscheduled === 'true' : false;
   const returnUnassigned =  unassigned ? unassigned === 'true' : false;
+  const returnUnscheduled = unscheduled ? unscheduled === 'true' : false;
 
-  const normalizeStartDate = (query: Record<string, object>) => {
-    if (returnUnscheduled) {
-      return { $or: [query, { startDate: null }] };
-    }
-
-    return query;
-  };
-
-  const normalizeEmployee = (query: Record<string, object>) => {
-    if (returnUnassigned) {
-      return { $or: [query, { assignedEmployee: null }] };
-    }
-
-    return query;
+  const defaultQuery = {
+    assignedEmployee: { $ne: null },
+    startDate: { $ne: null },
+    ...(employee && { assignedEmployee: employee }),
+    ...(startDate && { startDate: { $gte: startDate, $lt: new Date((endDate ?? startDate).getTime() + DAY) } }),
+    ...(stage && { stage }),
+    ...(priority && { priority }),
+    ...(type && { type }),
+    ...(status ? { status } : { status: { $ne: 'completed' } }),
   };
 
   const query = {
-    $and: [
-      ...(status ? [{ status }] : [{ status: { $ne: 'completed' } }]),
-      ...(startDate ? [normalizeStartDate({
-        startDate: {
-          $gte: startDate,
-          $lt: new Date((endDate ?? startDate).getTime() + DAY),
-        },
-      })] : []),
-      ...(employee ? [normalizeEmployee({ assignedEmployee: { $in: employee } })] : []),
-      ...(stage ? [{ stage: { $in: stage } }] : []),
-      ...(priority ? [{ priority: { $in: priority } }] : []),
-      ...(type ? [{ type: { $in: type } }] :[]),
+    $or: [
+      defaultQuery,
+      ...(returnUnassigned ? [{ ...defaultQuery, assignedEmployee: null }] : []),
+      ...(returnUnscheduled ? [{ ...defaultQuery, startDate: null }] : []),
+      ...((returnUnassigned && returnUnscheduled) ? [{ ...defaultQuery, assignedEmployee: null, startDate: null }] : [])
     ],
   };
 
