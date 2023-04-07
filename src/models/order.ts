@@ -153,6 +153,23 @@ const OrderSchema = new mongoose.Schema<IOrder>({
   },
 });
 
+OrderSchema.index({
+  type: 'text',
+  stage: 'text',
+  name: 'text',
+  email: 'text',
+  surname: 'text',
+  phone: 'text',
+  employeeMessage: 'text',
+  managerMessage: 'text',
+  status: 'text',
+  message: 'text',
+  'address.city': 'text',
+  'address.street': 'text',
+  'address.fullAddress': 'text',
+  'address.code': 'text',
+});
+
 OrderSchema.post('validate', async (order, next) => {
   if (!order.assignedEmployee || !order.startDate) {
     return next();

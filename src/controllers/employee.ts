@@ -21,13 +21,14 @@ interface Query {
   scheduledOnly?: 'true';
   limit?: string;
   offset?: string;
+  search?: string;
 }
 
 export const getEmployeeOrders = (req: Request<any, any, any, Query>, res: Response) => {
   const sortBy = (req.query.sortBy ?? 'creationDate') as string;
   const orderBy = req.query.orderBy === 'asc' ? 1 : -1;
 
-  const { status, scheduledOnly } = req.query;
+  const { search, status, scheduledOnly } = req.query;
   const startDate = stringToDate(req.query.startDate);
   const endDate = stringToDate(req.query.endDate);
   const stage = req.query.stage ? [req.query.stage].flat() : null;
@@ -48,6 +49,11 @@ export const getEmployeeOrders = (req: Request<any, any, any, Query>, res: Respo
     ...(stage && { stage: { $in: stage } }),
     ...(priority && { priority: { $in: priority } }),
     ...(type && { type: { $in: type } }),
+    ...(search && {
+      $text: {
+        $search: search,
+      },
+    }),
   };
 
   const sorting = {

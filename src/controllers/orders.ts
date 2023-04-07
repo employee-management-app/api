@@ -20,10 +20,11 @@ interface Query {
   unassigned?: 'true' | 'false';
   limit?: string;
   offset?: string;
+  search?: string;
 }
 
 export const getOrders = (req: Request<any, any, any, Query>, res: Response) => {
-  const { status, unscheduled, unassigned } = req.query;
+  const { search, status, unscheduled, unassigned } = req.query;
   const startDate = stringToDate(req.query.startDate);
   const endDate = stringToDate(req.query.endDate);
   const employee = req.query.employee ? [req.query.employee].flat() : null;
@@ -34,23 +35,30 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
   const returnUnscheduled = unscheduled ? unscheduled === 'true' : false;
 
   const defaultQuery = {
-    assignedEmployee: { $ne: null },
-    startDate: { $ne: null },
+    ...(!returnUnassigned && { assignedEmployee: { $ne: null } }),
     ...(employee && { assignedEmployee: employee }),
-    ...(startDate && { startDate: { $gte: startDate, $lt: new Date((endDate ?? startDate).getTime() + DAY) } }),
+    ...(employee && returnUnassigned && { assignedEmployee: { $in: [...employee, null] } }),
+    ...(!returnUnscheduled && { startDate: { $ne: null } }),
+    ...(startDate && !returnUnscheduled && { startDate: { $gte: startDate, $lt: new Date((endDate ?? startDate).getTime() + DAY) } }),
     ...(stage && { stage }),
     ...(priority && { priority }),
     ...(type && { type }),
     ...(status ? { status } : { status: { $ne: 'completed' } }),
+    ...(search && {
+      $text: {
+        $search: search,
+      },
+    }),
   };
 
   const query = {
-    $or: [
-      defaultQuery,
-      ...(returnUnassigned ? [{ ...defaultQuery, assignedEmployee: null }] : []),
-      ...(returnUnscheduled ? [{ ...defaultQuery, startDate: null }] : []),
-      ...((returnUnassigned && returnUnscheduled) ? [{ ...defaultQuery, assignedEmployee: null, startDate: null }] : [])
-    ],
+    ...defaultQuery,
+    ...((startDate && returnUnscheduled) && {
+      $or: [
+        { startDate: { $gte: startDate, $lt: new Date((endDate ?? startDate).getTime() + DAY) } },
+        { startDate: null },
+      ],
+    }),
   };
 
   const sort = status === 'completed'
