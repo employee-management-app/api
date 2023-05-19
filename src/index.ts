@@ -21,3 +21,5 @@ app.use(getRoutes(router));
 app.listen(process.env.PORT || 3001, () => {
   console.log('Server is running');
 });
+
+export default app;
