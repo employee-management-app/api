@@ -3,12 +3,12 @@ import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 
-import { mongoose } from './models';
+// import { mongoose } from './models';
 import { getRoutes } from './routes';
 
-mongoose.connect(process.env.MONGODB_URL as string, (error) => {
-  console.log(error || 'Successfully connected to MongoDB.');
-});
+// mongoose.connect(process.env.MONGODB_URL as string, (error) => {
+//   console.log(error || 'Successfully connected to MongoDB.');
+// });
 
 const app = express();
 const router = express.Router();
