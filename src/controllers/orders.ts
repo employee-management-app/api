@@ -24,6 +24,8 @@ interface Query {
 }
 
 export const getOrders = (req: Request<any, any, any, Query>, res: Response) => {
+  const { companyId } = res.locals;
+
   const { search, status, unscheduled, unassigned } = req.query;
   const startDate = stringToDate(req.query.startDate);
   const endDate = stringToDate(req.query.endDate);
@@ -35,6 +37,7 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
   const returnUnscheduled = unscheduled ? unscheduled === 'true' : false;
 
   const defaultQuery = {
+    companyId,
     ...(!returnUnassigned && { assignedEmployee: { $ne: null } }),
     ...(employee && { assignedEmployee: employee }),
     ...(employee && returnUnassigned && { assignedEmployee: { $in: [...employee, null] } }),
@@ -87,10 +90,13 @@ export const getOrders = (req: Request<any, any, any, Query>, res: Response) => 
 };
 
 export const getSlots = (req: Request, res: Response) => {
+  const { companyId } = res.locals;
+
   const startDate = stringToDate(req.query.startDate as string | undefined) || new Date();
   const endDate = stringToDate(req.query.endDate as string | undefined) || '';
 
   const query = {
+    companyId,
     ...(req.query.startDate && {
       startDate: {
         $gte: startOfDay(startDate),

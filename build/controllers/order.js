@@ -28,7 +28,8 @@ const getOrder = (req, res) => {
 };
 exports.getOrder = getOrder;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const order = new models_1.Order(req.body);
+    const { companyId } = res.locals;
+    const order = new models_1.Order(Object.assign(Object.assign({}, req.body), { companyId }));
     order.save((error, order) => {
         if (error) {
             return res.status(500).send(error);

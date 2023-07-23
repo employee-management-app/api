@@ -103,15 +103,17 @@ export const getEmployeeSlots = (req: Request, res: Response) => {
 };
 
 export const inviteEmployee = (req: Request, res: Response) => {
-  User.create({ ...req.body, isVerified: false })
+  const companyId = req.body.companyId ?? res.locals.companyId;
+
+  User.create({ ...req.body, companyId })
     .then((data) => {
-      const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET as jwt.Secret, { expiresIn: '24h' });
+      const token = jwt.sign({ id: data._id, companyId }, process.env.JWT_SECRET as jwt.Secret, { expiresIn: '24h' });
 
       sendEmail({
         to: req.body.email,
-        subject: 'Perfecta - complete your registration',
+        subject: 'Employee management system - invitation',
         html: `
-          <h3>Hey ${req.body.name}, you have been invited to work together in the Perfecta system!</h3>
+          <h3>Hey ${req.body.name}, you have been invited to work together in the employee management system!</h3>
           <p>Click the button below to complete your registration</p>
           <a href="${process.env.CLIENT_URL}/invitation/${token}" style="display: inline-block; text-decoration: none; background: #1352a1; color: #ffffff; padding: 8px 14px; border-radius: 4px;">Complete registration</a>
         `

@@ -151,6 +151,11 @@ const OrderSchema = new mongoose.Schema<IOrder>({
       },
     }],
   },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: 'Company',
+  },
 });
 
 OrderSchema.index({

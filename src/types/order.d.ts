@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { File } from './file.d.ts';
+
 interface Address {
   fullAddress: string;
   city: string;
@@ -9,15 +11,6 @@ interface Address {
   flat?: string;
   lat: number;
   lng: number;
-}
-
-interface File {
-  id: string;
-  format: string;
-  width: number;
-  height: number;
-  url: string;
-  creationDate: Date;
 }
 
 export interface Order {
@@ -40,4 +33,5 @@ export interface Order {
   endDate: Date | null;
   assignedEmployee: mongoose.Types.ObjectId | null;
   files: File[];
+  companyId: mongoose.Types.ObjectId;
 }

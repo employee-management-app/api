@@ -44,7 +44,7 @@ exports.User = mongoose_1.default.model('User', new mongoose_1.default.Schema({
     },
     isVerified: {
         type: Boolean,
-        default: true,
+        default: false,
         required: true,
     },
     isActive: {
@@ -56,5 +56,10 @@ exports.User = mongoose_1.default.model('User', new mongoose_1.default.Schema({
         type: String,
         default: '#FF0000',
         required: true,
+    },
+    companyId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        default: null,
+        ref: 'Company',
     },
 }));

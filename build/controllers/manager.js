@@ -1,0 +1,34 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.inviteManager = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const sendEmail_1 = require("../helpers/sendEmail");
+const models_1 = require("../models");
+const inviteManager = (req, res) => {
+    var _a;
+    const companyId = (_a = req.body.companyId) !== null && _a !== void 0 ? _a : res.locals.companyId;
+    models_1.User.create(Object.assign(Object.assign({}, req.body), { companyId, role: 'manager' }))
+        .then((data) => {
+        const token = jsonwebtoken_1.default.sign({ id: data._id, companyId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        (0, sendEmail_1.sendEmail)({
+            to: req.body.email,
+            subject: 'Employee management system - invitation',
+            html: `
+          <h3>Hey ${req.body.name}, you have been invited to work together in the employee management system!</h3>
+          <p>Click the button below to complete your registration</p>
+          <a href="${process.env.CLIENT_URL}/invitation/${token}" style="display: inline-block; text-decoration: none; background: #1352a1; color: #ffffff; padding: 8px 14px; border-radius: 4px;">Complete registration</a>
+        `
+        });
+        res.send(data);
+    })
+        .catch((error) => {
+        if (error.code === 11000) {
+            return res.status(400).send({ message: 'The user already exists' });
+        }
+        return res.status(500).send(error);
+    });
+};
+exports.inviteManager = inviteManager;

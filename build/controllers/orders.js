@@ -8,6 +8,7 @@ const models_1 = require("../models");
 const DAY = 60 * 60 * 24 * 1000;
 const getOrders = (req, res) => {
     var _a, _b;
+    const { companyId } = res.locals;
     const { search, status, unscheduled, unassigned } = req.query;
     const startDate = (0, stringToDate_1.stringToDate)(req.query.startDate);
     const endDate = (0, stringToDate_1.stringToDate)(req.query.endDate);
@@ -17,7 +18,7 @@ const getOrders = (req, res) => {
     const type = req.query.type ? [req.query.type].flat() : null;
     const returnUnassigned = unassigned ? unassigned === 'true' : false;
     const returnUnscheduled = unscheduled ? unscheduled === 'true' : false;
-    const defaultQuery = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, (!returnUnassigned && { assignedEmployee: { $ne: null } })), (employee && { assignedEmployee: employee })), (employee && returnUnassigned && { assignedEmployee: { $in: [...employee, null] } })), (!returnUnscheduled && { startDate: { $ne: null } })), (startDate && !returnUnscheduled && { startDate: { $gte: startDate, $lt: new Date((endDate !== null && endDate !== void 0 ? endDate : startDate).getTime() + DAY) } })), (stage && { stage })), (priority && { priority })), (type && { type })), (status ? { status } : { status: { $ne: 'completed' } })), (search && {
+    const defaultQuery = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({ companyId }, (!returnUnassigned && { assignedEmployee: { $ne: null } })), (employee && { assignedEmployee: employee })), (employee && returnUnassigned && { assignedEmployee: { $in: [...employee, null] } })), (!returnUnscheduled && { startDate: { $ne: null } })), (startDate && !returnUnscheduled && { startDate: { $gte: startDate, $lt: new Date((endDate !== null && endDate !== void 0 ? endDate : startDate).getTime() + DAY) } })), (stage && { stage })), (priority && { priority })), (type && { type })), (status ? { status } : { status: { $ne: 'completed' } })), (search && {
         $text: {
             $search: search,
         },
@@ -50,9 +51,10 @@ const getOrders = (req, res) => {
 };
 exports.getOrders = getOrders;
 const getSlots = (req, res) => {
+    const { companyId } = res.locals;
     const startDate = (0, stringToDate_1.stringToDate)(req.query.startDate) || new Date();
     const endDate = (0, stringToDate_1.stringToDate)(req.query.endDate) || '';
-    const query = Object.assign({}, (req.query.startDate && {
+    const query = Object.assign({ companyId }, (req.query.startDate && {
         startDate: {
             $gte: (0, date_fns_1.startOfDay)(startDate),
             $lte: (0, date_fns_1.endOfDay)(endDate || startDate),

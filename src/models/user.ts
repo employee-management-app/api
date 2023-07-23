@@ -41,7 +41,7 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
   },
   isVerified: {
     type: Boolean,
-    default: true,
+    default: false,
     required: true,
   },
   isActive: {
@@ -53,5 +53,10 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
     type: String,
     default: '#FF0000',
     required: true,
+  },
+  companyId: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: 'Company',
   },
 }));

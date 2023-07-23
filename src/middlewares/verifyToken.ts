@@ -15,7 +15,9 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
       return res.status(401).send({ message: 'Unathorized!' });
     }
 
-    User.findById((payload as jwt.JwtPayload).id).exec((error, user) => {
+    const { id: userId, companyId } = payload as jwt.JwtPayload;
+
+    User.findById(userId).exec((error, user) => {
       if (error) {
         return res.status(500).send(error);
       }
@@ -23,6 +25,9 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
       if (!user?.isActive || !user.isVerified) {
         return res.status(403).send({ message: 'Your account is inactive' });
       }
+
+      res.locals.user = user;
+      res.locals.companyId = companyId;
 
       next();
     });

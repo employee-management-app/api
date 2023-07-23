@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 export interface User {
   name: string;
   surname: string;
@@ -9,4 +11,5 @@ export interface User {
   isVerified: boolean;
   isActive: boolean;
   color: string;
+  companyId: mongoose.Types.ObjectId;
 }

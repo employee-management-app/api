@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEmployees = void 0;
+exports.getManagers = void 0;
 const models_1 = require("../models");
-const getEmployees = (req, res) => {
+const getManagers = (req, res) => {
     const { companyId } = res.locals;
-    models_1.User.find(Object.assign({ companyId, role: 'employee' }, req.query)).exec((error, employees) => {
+    models_1.User.find(Object.assign(Object.assign({}, req.query), { companyId, role: 'manager' })).exec((error, employees) => {
         if (error) {
             return res.status(500).send(error);
         }
         res.send(employees);
     });
 };
-exports.getEmployees = getEmployees;
+exports.getManagers = getManagers;

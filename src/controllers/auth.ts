@@ -3,22 +3,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { User } from '../models';
-import type { User as IUser } from '../types/user';
-
-export const signUp = (req: Request, res: Response) => {
-  const user = new User({
-    ...(req.body as IUser),
-    password: bcrypt.hashSync(req.body.password, 8),
-  });
-
-  user.save((error, user) => {
-    if (error) {
-      return res.status(500).send(error);
-    }
-
-    res.send(user);
-  });
-};
+import { Company } from '../models/company';
 
 export const signIn = (req: Request, res: Response) => {
   User.findOne({ email: req.body.email }).exec((error, user) => {
@@ -44,7 +29,7 @@ export const signIn = (req: Request, res: Response) => {
       return res.status(401).send({ message: 'Provided password is not correct!' });
     }
 
-    res.status(200).send({ user, token: jwt.sign({ id: user._id }, process.env.JWT_SECRET as jwt.Secret) });
+    res.status(200).send({ user, token: jwt.sign({ id: user._id, companyId: user.companyId }, process.env.JWT_SECRET as jwt.Secret) });
   });
 };
 
@@ -74,4 +59,16 @@ export const acceptInvitation = (req: Request, res: Response) => {
       });
     });
   });
+};
+
+export const getCurrentUser = (req: Request, res: Response) => {
+  const { user, companyId } = res.locals;
+
+  Company.findById(companyId)
+    .then((company) => {
+      res.send({ company, user });
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
 };

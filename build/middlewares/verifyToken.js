@@ -16,13 +16,16 @@ const verifyToken = (req, res, next) => {
         if (error) {
             return res.status(401).send({ message: 'Unathorized!' });
         }
-        models_1.User.findById(payload.id).exec((error, user) => {
+        const { id: userId, companyId } = payload;
+        models_1.User.findById(userId).exec((error, user) => {
             if (error) {
                 return res.status(500).send(error);
             }
             if (!(user === null || user === void 0 ? void 0 : user.isActive) || !user.isVerified) {
                 return res.status(403).send({ message: 'Your account is inactive' });
             }
+            res.locals.user = user;
+            res.locals.companyId = companyId;
             next();
         });
     });

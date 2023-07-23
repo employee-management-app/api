@@ -3,20 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.acceptInvitation = exports.signIn = exports.signUp = void 0;
+exports.getCurrentUser = exports.acceptInvitation = exports.signIn = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const models_1 = require("../models");
-const signUp = (req, res) => {
-    const user = new models_1.User(Object.assign(Object.assign({}, req.body), { password: bcryptjs_1.default.hashSync(req.body.password, 8) }));
-    user.save((error, user) => {
-        if (error) {
-            return res.status(500).send(error);
-        }
-        res.send(user);
-    });
-};
-exports.signUp = signUp;
+const company_1 = require("../models/company");
 const signIn = (req, res) => {
     models_1.User.findOne({ email: req.body.email }).exec((error, user) => {
         if (error) {
@@ -35,7 +26,7 @@ const signIn = (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).send({ message: 'Provided password is not correct!' });
         }
-        res.status(200).send({ user, token: jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET) });
+        res.status(200).send({ user, token: jsonwebtoken_1.default.sign({ id: user._id, companyId: user.companyId }, process.env.JWT_SECRET) });
     });
 };
 exports.signIn = signIn;
@@ -63,3 +54,14 @@ const acceptInvitation = (req, res) => {
     });
 };
 exports.acceptInvitation = acceptInvitation;
+const getCurrentUser = (req, res) => {
+    const { user, companyId } = res.locals;
+    company_1.Company.findById(companyId)
+        .then((company) => {
+        res.send({ company, user });
+    })
+        .catch((error) => {
+        res.status(500).send(error);
+    });
+};
+exports.getCurrentUser = getCurrentUser;

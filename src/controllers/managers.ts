@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 
 import { User } from '../models';
 
-const getEmployees = (req: Request, res: Response) => {
+const getManagers = (req: Request, res: Response) => {
   const { companyId } = res.locals;
 
-  User.find({ companyId, role: 'employee', ...req.query }).exec((error, employees) => {
+  User.find({ ...req.query, companyId, role: 'manager' }).exec((error, employees) => {
     if (error) {
       return res.status(500).send(error);
     }
@@ -15,5 +15,5 @@ const getEmployees = (req: Request, res: Response) => {
 };
 
 export {
-  getEmployees,
+  getManagers,
 };

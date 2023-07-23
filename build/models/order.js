@@ -163,6 +163,11 @@ const OrderSchema = new mongoose_1.default.Schema({
                 },
             }],
     },
+    companyId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        default: null,
+        ref: 'Company',
+    },
 });
 OrderSchema.index({
     type: 'text',
