@@ -16,7 +16,13 @@ const getMailOptions = (options: Mail.Options) => ({
 });
 
 export const sendEmail = (options: Mail.Options) => {
-  transporter.sendMail(getMailOptions(options), (error, info) => {
-    console.log(error || info);
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(getMailOptions(options), (error, info) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(info);
+      }
+    });
   });
 };
