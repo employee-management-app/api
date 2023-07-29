@@ -15,8 +15,15 @@ const transporter = nodemailer_1.default.createTransport({
 });
 const getMailOptions = (options) => (Object.assign(Object.assign({}, options), { from: process.env.GMAIL_EMAIL }));
 const sendEmail = (options) => {
-    transporter.sendMail(getMailOptions(options), (error, info) => {
-        console.log(error || info);
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(getMailOptions(options), (error, info) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(info);
+            }
+        });
     });
 };
 exports.sendEmail = sendEmail;

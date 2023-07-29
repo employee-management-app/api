@@ -106,10 +106,10 @@ export const inviteEmployee = (req: Request, res: Response) => {
   const companyId = req.body.companyId ?? res.locals.companyId;
 
   User.create({ ...req.body, companyId })
-    .then((data) => {
+    .then(async (data) => {
       const token = jwt.sign({ id: data._id, companyId }, process.env.JWT_SECRET as jwt.Secret, { expiresIn: '24h' });
 
-      sendEmail({
+      await sendEmail({
         to: req.body.email,
         subject: 'Employee management system - invitation',
         html: `
