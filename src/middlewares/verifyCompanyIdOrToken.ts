@@ -11,7 +11,7 @@ export const verifyCompanyIdOrToken = (req: Request, res: Response, next: NextFu
     return res.status(403).send({ message: 'No token or company id provided!' });
   }
 
-  if (!companyId) {
+  if (token) {
     return verifyToken(req, res, next);
   }
 
