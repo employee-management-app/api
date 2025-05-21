@@ -96,8 +96,14 @@ export const resetPassword = (req: Request, res: Response) => {
 
       sendEmail({
         to: email,
-        subject: 'Employee management system - Reset password',
-        html: `<p>Click <a href="${link}">here</a> to reset your password.</p>`,
+        subject: 'Reset hasła w aplikacji Technik w Terenie',
+        html: `
+          <p>Dzień dobry,</p>
+          <p>otrzymaliśmy prośbę o zresetowanie Twojego hasła w aplikacji Technik w Terenie.</p>
+          <p>Wszystkie hasła w naszej bazie przetrzymywane są w postaci zaszyfrowanej dlatego poniżej przesyłamy Ci link umożliwiający jego zmianę:<br/>
+            <a href="${link}">${link}</a>
+          </p>
+        `,
       })
         .then(() => {
           res.send({ message: 'Check your email to reset the password' });
@@ -130,8 +136,8 @@ export const changePassword = (req: Request, res: Response) => {
 
         sendEmail({
           to: user.email,
-          subject: 'Employee management system - Password changed',
-          html: '<p>Your password has been changed successfully!</p>',
+          subject: 'Hasło zostało zmienione w aplikacji Technik w Terenie',
+          html: '<p>Twoje hasło zostało zmienione. Możesz się zalogować za pomocą nowego hasła.</p>',
         })
           .then(() => {
             res.send(user.toJSON());
