@@ -6,12 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const transporter = nodemailer_1.default.createTransport({
+    host: 'ssl0.ovh.net',
     auth: {
         user: process.env.GMAIL_EMAIL,
         pass: process.env.GMAIL_PASSWORD,
     },
-    port: 90,
-    service: 'gmail',
+    port: 465,
+    secure: true,
 });
 const getMailOptions = (options) => (Object.assign(Object.assign({}, options), { from: process.env.GMAIL_EMAIL }));
 const sendEmail = (options) => {

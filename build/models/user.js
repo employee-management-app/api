@@ -33,7 +33,7 @@ exports.User = mongoose_1.default.model('User', new mongoose_1.default.Schema({
     },
     role: {
         type: String,
-        enum: ['employee', 'manager', 'admin'],
+        enum: ['employee', 'manager', 'owner', 'admin'],
         default: 'employee',
         required: true,
     },
