@@ -2,12 +2,13 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
 const transporter = nodemailer.createTransport({
+  host: 'ssl0.ovh.net',
   auth: {
     user: process.env.GMAIL_EMAIL,
     pass: process.env.GMAIL_PASSWORD,
   },
-  port: 90,
-  service: 'gmail',
+  port: 465,
+  secure: true,
 });
 
 const getMailOptions = (options: Mail.Options) => ({

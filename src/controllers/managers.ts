@@ -5,7 +5,7 @@ import { User } from '../models';
 const getManagers = (req: Request, res: Response) => {
   const { companyId } = res.locals;
 
-  User.find({ ...req.query, companyId, role: 'manager' }).exec((error, employees) => {
+  User.find({ ...req.query, companyId, role: { $in: ['manager', 'owner'] } }).exec((error, employees) => {
     if (error) {
       return res.status(500).send(error);
     }

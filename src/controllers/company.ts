@@ -69,7 +69,7 @@ export const getCompanyEmployees = (req: Request, res: Response) => {
 export const getCompanyManagers = (req: Request, res: Response) => {
   const { id: companyId } = req.params;
 
-  User.find({ companyId, role: 'manager' }).exec((error, managers) => {
+  User.find({ companyId, role: { $in: ['manager', 'owner'] } }).exec((error, managers) => {
     if (error) {
       return res.status(500).send(error);
     }

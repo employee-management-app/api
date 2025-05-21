@@ -30,7 +30,7 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
   },
   role: {
     type: String,
-    enum: ['employee', 'manager', 'admin'],
+    enum: ['employee', 'manager', 'owner', 'admin'],
     default: 'employee',
     required: true,
   },

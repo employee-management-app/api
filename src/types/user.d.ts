@@ -6,7 +6,7 @@ export interface User {
   phone: string;
   email: string;
   password: string;
-  role: 'employee' | 'manager' | 'admin';
+  role: 'employee' | 'manager' | 'owner' | 'admin';
   registrationDate: Date;
   isVerified: boolean;
   isActive: boolean;
