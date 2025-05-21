@@ -24,11 +24,12 @@ const inviteManager = (req, res) => {
         const token = jsonwebtoken_1.default.sign({ id: data._id, companyId }, process.env.JWT_SECRET, { expiresIn: '24h' });
         yield (0, sendEmail_1.sendEmail)({
             to: req.body.email,
-            subject: 'Employee management system - invitation',
+            subject: 'Potwierdzenie założenia konta w aplikacji Technik w Terenie',
             html: `
-          <h3>Hey ${req.body.name}, you have been invited to work together in the employee management system!</h3>
-          <p>Click the button below to complete your registration</p>
-          <a href="${process.env.CLIENT_URL}/invitation/${token}" style="display: inline-block; text-decoration: none; background: #1352a1; color: #ffffff; padding: 8px 14px; border-radius: 4px;">Complete registration</a>
+          <p>Dzień dobry,</p>
+          <p>założono dla Ciebie konto w aplikacji Technik w Terenie. Aby dokończyć proces rejestracji i ustalić hasło do Twojego konta kliknij w poniższy link: <br/>
+            <a href="${process.env.CLIENT_URL}/invitation/${token}">${process.env.CLIENT_URL}/invitation/${token}</a>
+          </p>
         `
         });
         res.send(data);
