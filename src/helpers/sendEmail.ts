@@ -17,11 +17,6 @@ const transporter = nodemailer.createTransport(
   },
 );
 
-const getMailOptions = (options: Mail.Options) => ({
-  ...options,
-  from: process.env.GMAIL_EMAIL,
-});
-
 export const sendEmail = (options: Mail.Options) => {
   const footer = `
     <br/>
@@ -34,7 +29,7 @@ export const sendEmail = (options: Mail.Options) => {
   `;
 
   return new Promise((resolve, reject) => {
-    transporter.sendMail(getMailOptions({ ...options, html: `${options.html}${footer}` }), (error, info) => {
+    transporter.sendMail({ ...options, html: `${options.html}${footer}` }, (error, info) => {
       if (error) {
         reject(error);
       } else {
