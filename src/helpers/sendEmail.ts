@@ -1,15 +1,21 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 
-const transporter = nodemailer.createTransport({
-  host: 'ssl0.ovh.net',
-  auth: {
-    user: process.env.GMAIL_EMAIL,
-    pass: process.env.GMAIL_PASSWORD,
+const transporter = nodemailer.createTransport(
+  {
+    host: 'ssl0.ovh.net',
+    auth: {
+      user: process.env.GMAIL_EMAIL,
+      pass: process.env.GMAIL_PASSWORD,
+    },
+    port: 465,
+    secure: true,
+  }, 
+  {
+    from: `"Technik w Terenie" <${process.env.GMAIL_EMAIL}>`,
+    name: 'Technik w Terenie',
   },
-  port: 465,
-  secure: true,
-});
+);
 
 const getMailOptions = (options: Mail.Options) => ({
   ...options,
