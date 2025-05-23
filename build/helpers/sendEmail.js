@@ -13,8 +13,10 @@ const transporter = nodemailer_1.default.createTransport({
     },
     port: 465,
     secure: true,
+}, {
+    from: `"Technik w Terenie" <${process.env.GMAIL_EMAIL}>`,
+    name: 'Technik w Terenie',
 });
-const getMailOptions = (options) => (Object.assign(Object.assign({}, options), { from: process.env.GMAIL_EMAIL }));
 const sendEmail = (options) => {
     const footer = `
     <br/>
@@ -26,7 +28,7 @@ const sendEmail = (options) => {
     <p style="font-size:10px;">Wiadomość ta oraz wszelkie załączone do niej pliki są poufne i mogą być prawnie chronione. Jeżeli nie jest Pan/Pani zamierzonym adresatem niniejszej wiadomości, nie może Pan/Pani jej ujawniać, kopiować, dystrybuować ani też w żaden inny sposób udostępniać lub wykorzystywać. O błędnym zaadresowaniu wiadomości prosimy niezwłocznie poinformować nadawcę i usunąć wiadomość.</p>
   `;
     return new Promise((resolve, reject) => {
-        transporter.sendMail(getMailOptions(Object.assign(Object.assign({}, options), { html: `${options.html}${footer}` })), (error, info) => {
+        transporter.sendMail(Object.assign(Object.assign({}, options), { html: `${options.html}${footer}` }), (error, info) => {
             if (error) {
                 reject(error);
             }

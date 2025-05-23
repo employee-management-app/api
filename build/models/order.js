@@ -197,7 +197,7 @@ OrderSchema.post('validate', (order, next) => __awaiter(void 0, void 0, void 0, 
             $lte: (0, date_fns_1.endOfDay)(order.startDate),
         },
     };
-    const orders = yield exports.Order.find(query);
+    const orders = yield exports.Order.find(query).populate('assignedEmployee');
     const overlappedOrder = orders.find(({ startDate, endDate }) => {
         if (!startDate || !endDate || !order.startDate || !order.endDate) {
             return false;
@@ -207,7 +207,10 @@ OrderSchema.post('validate', (order, next) => __awaiter(void 0, void 0, void 0, 
     if (overlappedOrder) {
         return next(new mongoose_1.default.Error.ValidatorError({
             message: 'Order\'s time overlaps with another order',
-            value: overlappedOrder._id,
+            value: {
+                order,
+                orders: orders,
+            },
         }));
     }
     next();
