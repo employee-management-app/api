@@ -40,7 +40,9 @@ const getEmployeeOrders = (req, res) => {
             $search: search,
         },
     }));
-    const sorting = Object.assign({ [sortBy]: orderBy }, (sortBy !== 'creationDate' && { creationDate: -1 }));
+    const sorting = {
+        [sortBy]: orderBy,
+    };
     const limit = Number((_b = req.query.limit) !== null && _b !== void 0 ? _b : Number.POSITIVE_INFINITY);
     const offset = Number((_c = req.query.offset) !== null && _c !== void 0 ? _c : 0);
     models_1.Order.find(query).sort(sorting).limit(limit).skip(offset).populate('assignedEmployee').exec((error, orders) => {

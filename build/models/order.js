@@ -21,6 +21,11 @@ const OrderSchema = new mongoose_1.default.Schema({
         default: Date.now,
         required: true,
     },
+    createdBy: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        default: null,
+        ref: 'User',
+    },
     type: {
         type: String,
         maxLength: 125,
@@ -102,6 +107,11 @@ const OrderSchema = new mongoose_1.default.Schema({
         maxLength: 1000,
     },
     managerMessage: {
+        type: String,
+        default: '',
+        maxLength: 1000,
+    },
+    employeeNotes: {
         type: String,
         default: '',
         maxLength: 1000,
