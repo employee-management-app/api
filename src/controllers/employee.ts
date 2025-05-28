@@ -58,7 +58,6 @@ export const getEmployeeOrders = (req: Request<any, any, any, Query>, res: Respo
 
   const sorting = {
     [sortBy]: orderBy,
-    ...(sortBy !== 'creationDate' && { creationDate: -1 }),
   } as Record<string, 1 | -1>;
 
   const limit = Number(req.query.limit ?? Number.POSITIVE_INFINITY);

@@ -16,6 +16,7 @@ interface Address {
 export interface Order {
   _id: string;
   creationDate: Date;
+  createdBy: mongoose.Types.ObjectId | null;
   type: string;
   stage: string;
   address: Address;
@@ -25,6 +26,7 @@ export interface Order {
   phone: string;
   message: string;
   employeeMessage: string;
+  employeeNotes: string;
   managerMessage: string;
   priority: 0 | 1 | 2 | 3;
   status: 'inbox' | 'inProgress' | 'completed' | 'cancelled' | 'deleted';

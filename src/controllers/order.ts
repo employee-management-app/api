@@ -21,8 +21,8 @@ const getOrder = (req: Request, res: Response) => {
 };
 
 const createOrder = async (req: Request, res: Response) => {
-  const { companyId } = res.locals;
-  const order = new Order({ ...req.body, companyId });
+  const { companyId, user } = res.locals;
+  const order = new Order({ ...req.body, companyId, createdBy: user._id });
 
   order.save((error, order) => {
     if (error) {
