@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCompanyManagers = exports.getCompanyEmployees = exports.getCurrentUserCompany = exports.createCompany = void 0;
+exports.getCompanyManagers = exports.getCompanyEmployees = exports.getCurrentUserCompany = exports.updateCompany = exports.createCompany = void 0;
 const cloudinary_1 = require("cloudinary");
 // eslint-disable-next-line unicorn/prefer-node-protocol
 const promises_1 = require("fs/promises");
@@ -39,6 +39,18 @@ const createCompany = (req, res) => {
     }
 };
 exports.createCompany = createCompany;
+const updateCompany = (req, res) => {
+    const { id: companyId } = req.params;
+    const { name, canAddImages } = req.body;
+    company_1.Company.findByIdAndUpdate(companyId, { name, canAddImages }, { new: true })
+        .then((company) => {
+        res.send(company);
+    })
+        .catch((error) => {
+        res.status(500).send(error);
+    });
+};
+exports.updateCompany = updateCompany;
 const getCurrentUserCompany = (req, res) => {
     const { companyId } = res.locals;
     company_1.Company.findById(companyId)

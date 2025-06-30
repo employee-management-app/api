@@ -38,6 +38,19 @@ export const createCompany = (req: Request, res: Response) => {
   }
 };
 
+export const updateCompany = (req: Request, res: Response) => {
+  const { id: companyId } = req.params;
+  const { name, canAddImages } = req.body;
+
+  Company.findByIdAndUpdate(companyId, { name, canAddImages }, { new: true })
+    .then((company) => {
+      res.send(company);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+};
+
 export const getCurrentUserCompany = (req: Request, res: Response) => {
   const { companyId } = res.locals;
 

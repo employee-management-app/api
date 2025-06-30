@@ -12,4 +12,8 @@ export const Company = mongoose.model<ICompany>('Company', new mongoose.Schema<I
     type: String,
     required: false,
   },
+  canAddImages: {
+    type: Boolean,
+    default: true,
+  },
 }));

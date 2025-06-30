@@ -15,4 +15,8 @@ exports.Company = mongoose_1.default.model('Company', new mongoose_1.default.Sch
         type: String,
         required: false,
     },
+    canAddImages: {
+        type: Boolean,
+        default: true,
+    },
 }));

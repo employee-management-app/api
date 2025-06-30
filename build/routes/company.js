@@ -10,6 +10,7 @@ const verifyToken_1 = require("../middlewares/verifyToken");
 const upload = (0, multer_1.default)({ dest: '/tmp' });
 exports.default = (router) => {
     router.post('/company', [verifyToken_1.verifyToken, adminOnly_1.adminOnly, upload.single('logo')], company_1.createCompany);
+    router.put('/company/:id', [verifyToken_1.verifyToken, adminOnly_1.adminOnly], company_1.updateCompany);
     router.get('/company', [verifyToken_1.verifyToken], company_1.getCurrentUserCompany);
     router.get('/company/:id/employees', [verifyToken_1.verifyToken, adminOnly_1.adminOnly], company_1.getCompanyEmployees);
     router.get('/company/:id/managers', [verifyToken_1.verifyToken, adminOnly_1.adminOnly], company_1.getCompanyManagers);
