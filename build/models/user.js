@@ -26,7 +26,6 @@ exports.User = mongoose_1.default.model('User', new mongoose_1.default.Schema({
         maxLength: 125,
         required: true,
         unique: true,
-        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
     },
     password: {
         type: String,

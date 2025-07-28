@@ -23,7 +23,6 @@ export const User = mongoose.model<IUser>('User', new mongoose.Schema<IUser>({
     maxLength: 125,
     required: true,
     unique: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email address'],
   },
   password: {
     type: String,
