@@ -73,11 +73,11 @@ const OrderSchema = new mongoose.Schema<IOrder>({
   },
   name: {
     type: String,
-    maxLength: 75,
+    maxLength: 100,
   },
   surname: {
     type: String,
-    maxLength: 75,
+    maxLength: 100,
   },
   phone: {
     type: String,
