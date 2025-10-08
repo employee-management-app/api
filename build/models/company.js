@@ -19,4 +19,8 @@ exports.Company = mongoose_1.default.model('Company', new mongoose_1.default.Sch
         type: Boolean,
         default: true,
     },
+    requiredFields: {
+        type: [String],
+        default: ['type', 'stage', 'address', 'phone'],
+    },
 }));

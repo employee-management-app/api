@@ -16,4 +16,8 @@ export const Company = mongoose.model<ICompany>('Company', new mongoose.Schema<I
     type: Boolean,
     default: true,
   },
+  requiredFields: {
+    type: [String],
+    default: ['type', 'stage', 'address', 'phone'],
+  },
 }));
