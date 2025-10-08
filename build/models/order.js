@@ -93,8 +93,7 @@ const OrderSchema = new mongoose_1.default.Schema({
     },
     phone: {
         type: String,
-        maxLength: 20,
-        required: true,
+        maxLength: 100,
     },
     message: {
         type: String,
