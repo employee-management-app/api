@@ -86,22 +86,22 @@ const OrderSchema = new mongoose.Schema<IOrder>({
   message: {
     type: String,
     default: '',
-    maxLength: 1000,
+    maxLength: 5000,
   },
   employeeMessage: {
     type: String,
     default: '',
-    maxLength: 1000,
+    maxLength: 5000,
   },
   managerMessage: {
     type: String,
     default: '',
-    maxLength: 1000,
+    maxLength: 5000,
   },
   employeeNotes: {
     type: String,
     default: '',
-    maxLength: 1000,
+    maxLength: 5000,
   },
   priority: {
     type: Number,
