@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Order = void 0;
 const date_fns_1 = require("date-fns");
 const mongoose_1 = __importDefault(require("mongoose"));
+const company_1 = require("./company");
 const OrderSchema = new mongoose_1.default.Schema({
     creationDate: {
         type: Date,
@@ -196,6 +197,10 @@ OrderSchema.index({
 });
 OrderSchema.post('validate', (order, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!order.assignedEmployee || !order.startDate) {
+        return next();
+    }
+    const company = yield company_1.Company.findById(order.companyId);
+    if (company && company.allowOverlappingOrders) {
         return next();
     }
     const query = {

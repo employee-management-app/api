@@ -3,4 +3,5 @@ export interface Company {
   logo: string;
   canAddImages: boolean;
   requiredFields: string[];
+  allowOverlappingOrders: boolean;
 }

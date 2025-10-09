@@ -23,4 +23,8 @@ exports.Company = mongoose_1.default.model('Company', new mongoose_1.default.Sch
         type: [String],
         default: ['type', 'stage', 'address', 'phone'],
     },
+    allowOverlappingOrders: {
+        type: Boolean,
+        default: false,
+    },
 }));

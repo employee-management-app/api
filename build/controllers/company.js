@@ -41,8 +41,8 @@ const createCompany = (req, res) => {
 exports.createCompany = createCompany;
 const updateCompany = (req, res) => {
     const { id: companyId } = req.params;
-    const { name, canAddImages, requiredFields } = req.body;
-    company_1.Company.findByIdAndUpdate(companyId, { name, canAddImages, requiredFields }, { new: true })
+    const { name, canAddImages, requiredFields, allowOverlappingOrders } = req.body;
+    company_1.Company.findByIdAndUpdate(companyId, { name, canAddImages, requiredFields, allowOverlappingOrders }, { new: true })
         .then((company) => {
         res.send(company);
     })

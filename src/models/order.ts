@@ -2,6 +2,7 @@ import { areIntervalsOverlapping, endOfDay, startOfDay } from 'date-fns';
 import mongoose from 'mongoose';
 
 import type { Order as IOrder } from '../types/order';
+import { Company } from './company';
 
 const OrderSchema = new mongoose.Schema<IOrder>({
   creationDate: {
@@ -186,6 +187,12 @@ OrderSchema.index({
 
 OrderSchema.post('validate', async (order, next) => {
   if (!order.assignedEmployee || !order.startDate) {
+    return next();
+  }
+
+  const company = await Company.findById(order.companyId);
+
+  if (company && company.allowOverlappingOrders) {
     return next();
   }
 

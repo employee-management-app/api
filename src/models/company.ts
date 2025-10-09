@@ -20,4 +20,8 @@ export const Company = mongoose.model<ICompany>('Company', new mongoose.Schema<I
     type: [String],
     default: ['type', 'stage', 'address', 'phone'],
   },
+  allowOverlappingOrders: {
+    type: Boolean,
+    default: false,
+  },
 }));
