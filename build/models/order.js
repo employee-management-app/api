@@ -52,7 +52,6 @@ const OrderSchema = new mongoose_1.default.Schema({
             code: {
                 type: String,
                 maxLength: 10,
-                required: true,
             },
             street: {
                 type: String,
@@ -61,7 +60,6 @@ const OrderSchema = new mongoose_1.default.Schema({
             house: {
                 type: String,
                 maxLength: 10,
-                required: true,
             },
             flat: {
                 type: String,
