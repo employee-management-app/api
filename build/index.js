@@ -14,7 +14,9 @@ models_1.mongoose.connect(process.env.MONGODB_URL, (error) => {
 const app = (0, express_1.default)();
 const router = express_1.default.Router();
 app.use((0, cors_1.default)());
-app.use(express_1.default.json());
+app.use(express_1.default.json({
+    limit: '50mb',
+}));
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, routes_1.getRoutes)(router));
 app.listen(process.env.PORT || 3001, () => {
