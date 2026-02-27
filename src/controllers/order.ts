@@ -1,7 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { Request, Response } from 'express';
-// eslint-disable-next-line unicorn/prefer-node-protocol
-import { unlink } from 'fs/promises';
 import { merge } from 'lodash';
 
 import { Order } from '../models';
@@ -84,39 +82,16 @@ const uploadFile = (req: Request, res: Response) => {
       return res.status(404).send({ message: 'Order not found' });
     }
 
-    const path = req.file?.path;
+    const file = req.body;
 
-    if (!path) {
-      return res.status(400).send({ message: 'File was not provided!' });
-    }
+    order.files.push(file);
+    order.save((error) => {
+      if (error) {
+        return res.status(500).send(error);
+      }
 
-    cloudinary.uploader.upload(path, { use_filename: true, quality: 'auto:eco' })
-      .then((data) => {
-        const file = {
-          id: data.public_id,
-          format: data.format,
-          width: data.width,
-          height: data.height,
-          url: data.secure_url,
-          creationDate: data.created_at as unknown as Date,
-        };
-
-        order.files.push(file);
-
-        order.save((error) => {
-          if (error) {
-            return res.status(500).send(error);
-          }
-
-          res.send(file);
-        });
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      })
-      .finally(() => {
-        unlink(path);
-      });
+      res.send(file);
+    });
   });
 };
 
